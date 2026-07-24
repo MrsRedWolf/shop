@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Личный кабинет — РГСУ Мерч</title>
+
+  <link rel="icon" type="image/png" href="/static/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/svg+xml" href="/static/favicons/favicon.svg">
+
+  <style>
+  .card-container {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 320px;
+    height: 200px;
+    margin: 0 auto 20px;
+  }
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s ease;
+    transform-style: preserve-3d;
+  }
+  .card-container.flipped .card-inner {
+    transform: rotateY(180deg);
+  }
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 20px;
+    box-sizing: border-box;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #102FA1 0%, #082567 100%) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .card-back {
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, #082567 0%, #102FA1 100%) !important;
+  }
+  .card-front .card-logo { align-self: flex-end; font-size: 14px; font-weight: bold; letter-spacing: 1px; }
+  .card-front .card-number { font-size: 18px; letter-spacing: 2px; word-spacing: 6px; text-align: center; }
+  .card-front .card-details { display: flex; justify-content: space-between; font-size: 12px; }
+  .card-back .card-stripe { width: 100%; height: 40px; background: #333; margin: 10px 0; }
+  .card-back .card-cvv-label { font-size: 10px; text-align: right; }
+  .card-back .card-cvv { background: white; color: #000; padding: 4px 8px; border-radius: 4px; font-weight: bold; text-align: right; align-self: flex-end; }
+  </style>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+        extend: {
+          colors: {
+            rgsu: {
+              50: '#eef1fa', 100: '#dde4f5', 200: '#bbc9eb', 300: '#99aee1',
+              400: '#7793d7', 500: '#102FA1', 600: '#0d267d', 700: '#0a1c59',
+              800: '#061235', 900: '#030911',
+            },
+            'rgsu-dark': '#082567',
+            'rgsu-light': '#D5E4F4',
+            'rgsu-red': '#A91917',
+            surface: {
+              0: '#ffffff', 1: '#f8f9fb', 2: '#f0f2f5', 3: '#e8eaef', 4: '#dde1e6',
+            },
+            onSurface: {
+              primary: '#1a1c1e', secondary: '#44474a', tertiary: '#6f7378',
+            }
+          },
+          borderRadius: { 'm3xl': '28px', 'm4xl': '36px' },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+
+    <script>
+        // Немедленное применение темы, чтобы избежать вспышки
+        (function() {
+            var theme = localStorage.getItem('rgsu_theme');
+            if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="bg-surface-1 text-onSurface-primary min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-surface-3 dark:bg-gray-900/90 dark:border-gray-700">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="/static/index.html">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl hero-gradient flex items-center justify-center shadow-lg shadow-rgsu-500/30">
+                    <svg viewBox="0 0 82.64 88.24" class="w-full h-full p-1.5" preserveAspectRatio="xMidYMid meet">
+                    <path fill="white" d="M4.26,84.06c0-3.28,2.61-6.11,4.51-7.74,1.72,1.28,3.85,2.03,6.15,2.03,2.46,0,4.71-.86,6.49-2.3,1.33,1.11,3.14,2.9,4.13,5.07v7.11h4.26v-12.61c0-6.02,2.66-9.28,4.31-10.72,2.13,1.7,4.82,2.71,7.75,2.71s5.4-.93,7.48-2.5c1.66,1.54,4.07,4.77,4.07,10.51v2.89c-.02.33-.03.67-.03,1.02v8.7h4.29v-9.55c.31-4.61,3.05-7.28,4.78-8.52,1.66,1.15,3.68,1.82,5.85,1.82,2.04,0,3.94-.6,5.55-1.62,1.84,1.4,4.55,4.28,4.55,9.17v8.7h4.26v-8.7c0-6.25-3.22-10.11-5.75-12.17,1.09-1.64,1.72-3.6,1.72-5.71,0-3.82-2.08-7.15-5.17-8.94v-5.73c0-11.76-7.65-17.86-12.5-20.55,2.94-2.8,4.78-6.74,4.78-11.11,0-8.45-6.88-15.33-15.33-15.33-5.56,0-10.43,2.97-13.12,7.41-2.12-1.11-4.52-1.74-7.07-1.74-8.45,0-15.33,6.88-15.33,15.33,0,3.64,1.28,6.98,3.4,9.62-3.01,2.17-7.16,7.03-7.27,17.35-.05,4.42-.07,7.93-.08,10.51-3.73,1.56-6.36,5.25-6.36,9.54,0,1.86.5,3.61,1.36,5.12-2.5,2.16-5.94,6.02-5.94,10.92v4.19h4.26v-4.19Zm37.59-20.69c-4.53,0-8.22-3.69-8.22-8.22s3.69-8.22,8.22-8.22,8.22,3.69,8.22,8.22-3.69,8.22-8.22,8.22Zm26.44,4.37c-3.35,0-6.08-2.73-6.08-6.08s2.73-6.08,6.08-6.08,6.08,2.73,6.08,6.08-2.73,6.08-6.08,6.08Zm.91-20.75v4.38c-.3-.03-.6-.04-.91-.04-5.7,0-10.33,4.64-10.33,10.33,0,1.98.56,3.84,1.54,5.41-.83.64-1.77,1.49-2.65,2.56-1.08-3.69-3.02-6.13-4.6-7.6,1.31-1.97,2.08-4.34,2.08-6.88,0-3.94-1.84-7.45-4.7-9.74-.65-8.8-4.56-13.02-7.36-14.94.39-.49.75-1,1.07-1.54,2.12,1.11,4.52,1.73,7.07,1.73,2.35,0,4.57-.53,6.56-1.48,3.25,1.36,12.23,6.16,12.23,17.8ZM50.41,4.26c6.11,0,11.08,4.97,11.08,11.08s-4.97,11.08-11.08,11.08c-1.96,0-3.79-.51-5.39-1.41.34-1.27.53-2.61.53-3.99,0-4.37-1.84-8.32-4.79-11.11,1.9-3.36,5.51-5.64,9.64-5.64Zm-20.19,5.68c6.11,0,11.08,4.97,11.08,11.08s-4.97,11.08-11.08,11.08-11.08-4.97-11.08-11.08,4.97-11.08,11.08-11.08Zm-8.74,23.67c2.48,1.73,5.49,2.74,8.74,2.74s6.37-1.06,8.88-2.84c1.58.85,4.81,3.31,5.95,9.6-1.02-.27-2.09-.42-3.19-.42-6.88,0-12.47,5.59-12.47,12.47,0,2.42.7,4.68,1.89,6.59-2.18,1.92-5.26,5.77-5.68,12.37-.52-.52-1.03-.97-1.5-1.36.74-1.42,1.15-3.03,1.15-4.74,0-5.6-4.48-10.17-10.05-10.33,0-2.2.03-5.31.07-9.68.1-9.71,4.23-13.27,6.21-14.42Zm-6.57,28.34c3.35,0,6.08,2.73,6.08,6.08s-2.73,6.08-6.08,6.08-6.08-2.73-6.08-6.08,2.73-6.08,6.08-6.08Z"/>
+                    </svg>
+                </div>
+                <div class="hidden sm:block">
+                    <h1 class="text-lg font-bold text-onSurface-primary leading-none">Мерч РГСУ</h1>
+                    <p class="text-xs text-onSurface-tertiary mt-0.5">Официальный магазин</p>
+                </div>
+            </div>
+        </a>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleTheme()" class="m3-btn w-10 h-10 rounded-2xl flex items-center justify-center hover:bg-surface-2 text-onSurface-secondary" title="Переключить тему">
+            <i data-lucide="moon" class="w-5 h-5 hidden dark:block"></i>
+            <i data-lucide="sun" class="w-5 h-5 block dark:hidden"></i>
+          </button>
+          <div class="relative">
+                <button onclick="openCart()" class="m3-btn relative h-10 px-4 sm:px-5 bg-rgsu-500 hover:bg-rgsu-600 text-white rounded-2xl flex items-center gap-2 font-semibold text-sm shadow-lg shadow-rgsu-500/25">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <span class="hidden sm:inline" id="cartTotal">0 ₽</span>
+                </button>
+                <span id="cartBadge" class="hidden absolute -top-1 -right-1 w-5.5 h-5.5 min-w-[22px] bg-white text-rgsu-500 text-xs font-bold rounded-full flex items-center justify-center badge-bounce px-1">0</span>
+            </div>
+          <button onclick="logout()" class="m3-btn w-10 h-10 rounded-2xl flex items-center justify-center hover:bg-surface-2 text-onSurface-secondary">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ОСНОВНОЙ КОНТЕНТ -->
+  <main class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1" id="cabinetContent">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
+      <div class="w-20 h-20 rounded-3xl bg-rgsu-50 flex items-center justify-center border-4 border-white shadow-xl relative">
+        <img id="avatarPreview" src="" alt="Аватар" class="w-full h-full rounded-3xl object-cover hidden">
+        <i id="avatarDefault" data-lucide="camera" class="w-8 h-8 text-rgsu-400"></i>
+        <input type="file" id="avatarInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="uploadAvatar(event)">
+      </div>
+      <div>
+        <h2 class="text-2xl font-extrabold" id="cabinetUserName">Студент</h2>
+        <p class="text-sm text-onSurface-tertiary" id="cabinetUserEmail">student@rgsu.net</p>
+        <p class="text-xs text-green-600 font-medium mt-1 flex items-center gap-1">
+          <i data-lucide="shield-check" class="w-4 h-4"></i> Профиль верифицирован
+        </p>
+      </div>
+    </div>
+
+        <!-- Табы -->
+    <div class="flex gap-2 mb-6 border-b border-surface-2 pb-2 overflow-x-auto">
+      <button class="cabinet-tab active px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap" data-tab="profile">Профиль</button>
+      <button class="cabinet-tab px-4 py-2 rounded-xl text-sm font-medium text-onSurface-secondary hover:bg-surface-2 whitespace-nowrap" data-tab="orders">Заказы</button>
+      <button class="cabinet-tab px-4 py-2 rounded-xl text-sm font-medium text-onSurface-secondary hover:bg-surface-2 whitespace-nowrap" data-tab="favorites">Избранное</button>
+      <button class="cabinet-tab px-4 py-2 rounded-xl text-sm font-medium text-onSurface-secondary hover:bg-surface-2 whitespace-nowrap" data-tab="addresses">Адреса</button>
+      <button class="cabinet-tab px-4 py-2 rounded-xl text-sm font-medium text-onSurface-secondary hover:bg-surface-2 whitespace-nowrap" data-tab="payment">Способы оплаты</button>
+    </div>
+
+    <!-- Содержимое табов -->
+    <div id="tabProfile" class="cabinet-tab-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+            <label class="text-sm font-medium text-onSurface-secondary block mb-1">Фамилия</label>
+            <input type="text" id="profileSurname" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+            </div>
+            <div>
+            <label class="text-sm font-medium text-onSurface-secondary block mb-1">Имя</label>
+            <input type="text" id="profileName" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+            </div>
+            <div>
+            <label class="text-sm font-medium text-onSurface-secondary block mb-1">Отчество</label>
+            <input type="text" id="profilePatronymic" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+            </div>
+            <div>
+            <label class="text-sm font-medium text-onSurface-secondary block mb-1">Email</label>
+            <input type="email" id="profileEmail" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+            </div>
+            <div>
+            <label class="text-sm font-medium text-onSurface-secondary block mb-1">Телефон</label>
+            <input type="tel" id="profilePhone" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+            </div>
+            <div>
+            <label class="text-sm font-medium text-onSurface-secondary block mb-1">Дата рождения</label>
+            <input type="date" id="profileBirthdate" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+            </div>
+        </div>
+        <div class="mt-6 flex justify-center">
+            <button onclick="saveProfile()" class="m3-btn w-full max-w-md py-3 bg-rgsu-500 text-white rounded-2xl font-bold shadow-lg shadow-rgsu-500/20">Сохранить изменения</button>
+        </div>
+    </div>
+
+    <div id="tabOrders" class="cabinet-tab-content hidden">
+      <div id="ordersList" class="space-y-4"></div>
+      <div id="ordersEmpty" class="hidden text-center py-8">
+        <i data-lucide="package" class="w-12 h-12 text-onSurface-tertiary mx-auto mb-3"></i>
+        <p class="text-onSurface-tertiary">У вас пока нет заказов</p>
+        <a href="/static/index.html" class="m3-btn inline-flex items-center gap-2 px-5 py-2.5 bg-rgsu-500 text-white rounded-2xl font-medium text-sm mt-4">Перейти в каталог</a>
+      </div>
+    </div>
+
+    <div id="tabFavorites" class="cabinet-tab-content hidden">
+      <div id="cabinetFavoritesGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+      <div id="favoritesEmpty" class="hidden text-center py-8">
+        <i data-lucide="heart" class="w-12 h-12 text-onSurface-tertiary mx-auto mb-3"></i>
+        <p class="text-onSurface-tertiary">Нет избранных товаров</p>
+      </div>
+    </div>
+
+    <div id="tabAddresses" class="cabinet-tab-content hidden">
+        <div class="space-y-4 w-full">
+            <div class="flex items-center justify-between">
+            <h3 class="text-lg font-bold">Мои адреса</h3>
+            <button onclick="openAddressModal()" class="m3-btn px-4 py-2 bg-rgsu-500 text-white rounded-xl text-sm font-medium">+ Добавить адрес</button>
+            </div>
+            <div id="addressesList" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <div id="tabPayment" class="cabinet-tab-content hidden">
+      <div id="paymentMethodsContainer" class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold">Сохранённые карты</h3>
+          <button onclick="openCardModal()" class="m3-btn px-4 py-2 bg-rgsu-500 text-white rounded-xl text-sm font-medium">+ Добавить карту</button>
+        </div>
+        <div id="paymentMethodsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-rgsu-dark text-white mt-16">
+  <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-2xl bg-rgsu-500 flex items-center justify-center">
+            <svg viewBox="0 0 82.64 88.24" class="w-full h-full p-1.5" preserveAspectRatio="xMidYMid meet">
+              <path fill="white" d="M4.26,84.06c0-3.28,2.61-6.11,4.51-7.74,1.72,1.28,3.85,2.03,6.15,2.03,2.46,0,4.71-.86,6.49-2.3,1.33,1.11,3.14,2.9,4.13,5.07v7.11h4.26v-12.61c0-6.02,2.66-9.28,4.31-10.72,2.13,1.7,4.82,2.71,7.75,2.71s5.4-.93,7.48-2.5c1.66,1.54,4.07,4.77,4.07,10.51v2.89c-.02.33-.03.67-.03,1.02v8.7h4.29v-9.55c.31-4.61,3.05-7.28,4.78-8.52,1.66,1.15,3.68,1.82,5.85,1.82,2.04,0,3.94-.6,5.55-1.62,1.84,1.4,4.55,4.28,4.55,9.17v8.7h4.26v-8.7c0-6.25-3.22-10.11-5.75-12.17,1.09-1.64,1.72-3.6,1.72-5.71,0-3.82-2.08-7.15-5.17-8.94v-5.73c0-11.76-7.65-17.86-12.5-20.55,2.94-2.8,4.78-6.74,4.78-11.11,0-8.45-6.88-15.33-15.33-15.33-5.56,0-10.43,2.97-13.12,7.41-2.12-1.11-4.52-1.74-7.07-1.74-8.45,0-15.33,6.88-15.33,15.33,0,3.64,1.28,6.98,3.4,9.62-3.01,2.17-7.16,7.03-7.27,17.35-.05,4.42-.07,7.93-.08,10.51-3.73,1.56-6.36,5.25-6.36,9.54,0,1.86.5,3.61,1.36,5.12-2.5,2.16-5.94,6.02-5.94,10.92v4.19h4.26v-4.19Zm37.59-20.69c-4.53,0-8.22-3.69-8.22-8.22s3.69-8.22,8.22-8.22,8.22,3.69,8.22,8.22-3.69,8.22-8.22,8.22Zm26.44,4.37c-3.35,0-6.08-2.73-6.08-6.08s2.73-6.08,6.08-6.08,6.08,2.73,6.08,6.08-2.73,6.08-6.08,6.08Zm.91-20.75v4.38c-.3-.03-.6-.04-.91-.04-5.7,0-10.33,4.64-10.33,10.33,0,1.98.56,3.84,1.54,5.41-.83.64-1.77,1.49-2.65,2.56-1.08-3.69-3.02-6.13-4.6-7.6,1.31-1.97,2.08-4.34,2.08-6.88,0-3.94-1.84-7.45-4.7-9.74-.65-8.8-4.56-13.02-7.36-14.94.39-.49.75-1,1.07-1.54,2.12,1.11,4.52,1.73,7.07,1.73,2.35,0,4.57-.53,6.56-1.48,3.25,1.36,12.23,6.16,12.23,17.8ZM50.41,4.26c6.11,0,11.08,4.97,11.08,11.08s-4.97,11.08-11.08,11.08c-1.96,0-3.79-.51-5.39-1.41.34-1.27.53-2.61.53-3.99,0-4.37-1.84-8.32-4.79-11.11,1.9-3.36,5.51-5.64,9.64-5.64Zm-20.19,5.68c6.11,0,11.08,4.97,11.08,11.08s-4.97,11.08-11.08,11.08-11.08-4.97-11.08-11.08,4.97-11.08,11.08-11.08Zm-8.74,23.67c2.48,1.73,5.49,2.74,8.74,2.74s6.37-1.06,8.88-2.84c1.58.85,4.81,3.31,5.95,9.6-1.02-.27-2.09-.42-3.19-.42-6.88,0-12.47,5.59-12.47,12.47,0,2.42.7,4.68,1.89,6.59-2.18,1.92-5.26,5.77-5.68,12.37-.52-.52-1.03-.97-1.5-1.36.74-1.42,1.15-3.03,1.15-4.74,0-5.6-4.48-10.17-10.05-10.33,0-2.2.03-5.31.07-9.68.1-9.71,4.23-13.27,6.21-14.42Zm-6.57,28.34c3.35,0,6.08,2.73,6.08,6.08s-2.73,6.08-6.08,6.08-6.08-2.73-6.08-6.08,2.73-6.08,6.08-6.08Z"/>
+            </svg>
+          </div>
+          <span class="font-bold text-lg">Мерч РГСУ</span>
+        </div>
+        <p class="text-white/60 text-sm leading-relaxed">Официальный магазин мерчандайза Российского государственного социального университета</p>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-3">Информация</h4>
+        <ul class="space-y-2 text-sm text-white/60">
+          <li><a href="#" onclick="event.preventDefault(); openInfoModal('delivery')" class="hover:text-white transition-colors">Доставка</a></li>
+          <li><a href="#" onclick="event.preventDefault(); openInfoModal('return')" class="hover:text-white transition-colors">Возврат</a></li>
+          <li><a href="#" onclick="event.preventDefault(); openInfoModal('faq')" class="hover:text-white transition-colors">FAQ</a></li>
+          <li><a href="https://rgsu.net/netcat_files/multifile/934/9/Politika_obrabotki_personal_nyh_dannyh.pdf?id=2798" target="_blank" class="hover:text-white transition-colors">Политика РГСУ в отношении обработки персональных данных</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-3">Контакты</h4>
+        <ul class="space-y-2 text-sm text-white/60">
+          <li class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> <a href="mailto:merch@rgsu.net" class="hover:text-white transition-colors">merch@rgsu.net</a></li>
+          <li class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> <a href="tel:+74952556722" class="hover:text-white transition-colors">+7 (495) 255-67-22</a></li>
+          <li class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i> Москва, ул. Вильгельма Пика, 4</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/10 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-white/40">© 2026 РГСУ Мерч. Все права защищены.</p>
+      <div class="flex gap-3 flex-wrap justify-center">
+        <!-- ВКонтакте -->
+        <a href="https://vk.com/rgsu_official" target="_blank" rel="noopener noreferrer" 
+          class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors" 
+          title="ВКонтакте">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.804 17.232C6.654 17.232 3.146 13.016 3 6h3.08c.102 5.15 2.373 7.33 4.172 7.78V6h2.9v4.441C14.93 10.25 16.795 8.226 17.424 6h2.901c-.483 2.743-2.507 4.767-3.946 5.599 1.44.675 3.744 2.44 4.621 5.633h-3.193c-.686-2.136-2.395-3.79-4.655-4.014v4.014h-.348z" fill="white"/>
+          </svg>
+        </a>
+
+        <!-- Telegram -->
+        <a href="https://t.me/rgsu_life" target="_blank" rel="noopener noreferrer" 
+          class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors" 
+          title="Telegram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path clip-rule="evenodd" d="M3.132 10.872c4.418-1.925 7.364-3.194 8.838-3.807C16.18 5.315 17.055 5.01 17.625 5c.126-.002.406.029.588.176a.638.638 0 01.215.41c.02.119.046.387.026.597-.228 2.397-1.215 8.213-1.718 10.897-.212 1.136-.63 1.517-1.035 1.554-.88.081-1.549-.582-2.401-1.14-1.334-.875-2.088-1.42-3.383-2.272-1.496-.987-.526-1.528.327-2.414.223-.232 4.1-3.76 4.176-4.08.01-.04.018-.189-.07-.267-.09-.08-.22-.052-.314-.03-.134.03-2.265 1.438-6.393 4.225-.605.415-1.153.617-1.644.607-.541-.012-1.582-.306-2.356-.558-.95-.308-1.704-.471-1.638-.995.034-.273.41-.552 1.128-.838z" fill="white"/>
+          </svg>
+        </a>
+
+        <!-- Rutube -->
+        <a href="https://rutube.ru/channel/24733751/" target="_blank" rel="noopener noreferrer" 
+          class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors" 
+          title="Rutube">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 6.606c3.373 0 6.764 0 10.137.019.55 0 1.1.036 1.631.146 1.1.238 1.815.934 1.925 2.033.11 1.135.11 2.289-.019 3.406-.128 1.19-1.008 1.795-2.254 2.051.953 1.319 1.815 2.527 2.694 3.754h-3.262c-.733-1.08-1.693-2.661-2.463-3.705H6.933c.037 1.062-.018 2.643 0 3.705H4V6.606zm2.933 5.165c2.474 0 4.912.054 7.35-.019 1.009-.036.679-.97.734-1.575.036-.567-.129-1.043-.807-1.062-.77-.018-1.521-.018-2.291-.018H6.95c-.018.934-.018 1.776-.018 2.674z" fill="white"/>
+            <circle cx="18.659" cy="4.515" r="1.499" fill="white"/>
+          </svg>
+        </a>
+
+        <!-- Одноклассники -->
+        <a href="https://ok.ru/rgsu.official" target="_blank" rel="noopener noreferrer" 
+          class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors" 
+          title="Одноклассники">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.53 12.133c-2.221 0-4.068-1.845-4.068-4.028C7.462 5.845 9.31 4 11.532 4 13.83 4 15.6 5.845 15.6 8.105a4.044 4.044 0 01-4.056 4.03c-.004 0-.008 0-.013-.002zm0-5.76c-.94 0-1.655.79-1.655 1.733 0 .94.715 1.656 1.657 1.656.979 0 1.657-.716 1.657-1.656 0-.943-.678-1.733-1.658-1.733zm1.621 9.112l2.3 2.222c.451.489.451 1.204 0 1.657-.49.488-1.244.488-1.621 0l-2.298-2.26-2.223 2.26a1.195 1.195 0 01-.867.338c-.264 0-.565-.113-.83-.338-.452-.453-.452-1.168 0-1.658l2.336-2.221a10.609 10.609 0 01-2.409-1.053c-.565-.302-.678-1.054-.376-1.62.376-.565 1.054-.715 1.658-.338a5.208 5.208 0 005.424 0c.603-.377 1.318-.227 1.657.338.34.566.188 1.318-.34 1.62-.714.452-1.543.79-2.41 1.054z" fill="white"/>
+          </svg>
+        </a>
+
+        <!-- Мессенджер Max -->
+        <a href="https://web.max.ru/-68434168042935" target="_blank" rel="noopener noreferrer" 
+          class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors" 
+          title="Max Messenger">
+          <svg width="18" height="18" viewBox="-3 -2 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.36874 18.2119C7.56857 18.2119 6.732 17.9491 5.27786 16.8979C4.35806 18.0805 1.4454 19.0047 1.31837 17.4235C1.31837 16.2365 1.05557 15.2335 0.757728 14.1385C0.40296 12.7895 0 11.2872 0 9.11033C0 3.9113 4.2661 0 9.32057 0C14.3794 0 18.3433 4.10402 18.3433 9.1585C18.3603 14.1348 14.345 18.1853 9.36874 18.2119ZM9.44321 4.49383C6.98167 4.36682 5.06323 6.07063 4.63838 8.74241C4.28798 10.9543 4.90994 13.648 5.43991 13.7881C5.69395 13.8494 6.33343 13.3326 6.732 12.934C7.39107 13.3893 8.15856 13.6628 8.95704 13.7268C11.5076 13.8495 13.687 11.9077 13.8582 9.36C13.9579 6.80683 11.9941 4.64434 9.44321 4.49822V4.49383Z" fill="white"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  </footer>
+
+  <div id="toastContainer" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-2"></div>
+
+  <script src="/static/javascript/script.js"></script>
+
+  <!-- Product Modal Overlay -->
+  <div id="productModalOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden" onclick="closeProductModal()"></div>
+  <div id="productModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto m3-expressive-shadow-xl modal-overlay" onclick="event.stopPropagation()">
+      <div class="sticky top-0 bg-white/90 backdrop-blur-xl z-10 flex items-center justify-between p-4 sm:p-5 border-b border-surface-3 rounded-t-3xl">
+        <span class="text-xs font-medium px-3 py-1 rounded-full bg-rgsu-50 text-rgsu-500" id="modalCategory">Категория</span>
+        <button onclick="closeProductModal()" class="m3-btn w-10 h-10 rounded-2xl flex items-center justify-center hover:bg-surface-2 text-onSurface-secondary">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="p-4 sm:p-6">
+        <div class="flex flex-col md:flex-row gap-6">
+          <!-- Левая колонка – изображения -->
+          <div class="md:w-1/2">
+            <div class="aspect-square rounded-3xl overflow-hidden bg-surface-2 m3-expressive-shadow mb-3">
+              <img id="modalImage" src="" alt="" class="w-full h-full object-cover cursor-pointer" onclick="openLightbox(this.src)">
+            </div>
+            <div id="modalThumbnails" class="flex gap-2 overflow-x-auto pb-1"></div>
+          </div>
+
+          <!-- Правая колонка – информация -->
+          <div class="md:w-1/2 flex flex-col">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <h2 class="text-2xl sm:text-3xl font-extrabold leading-tight" id="modalTitle">Название</h2>
+              <button onclick="toggleFavoriteModal()" id="modalFavBtn" class="m3-btn flex-shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center hover:bg-surface-2 text-onSurface-tertiary">
+                <i data-lucide="heart" class="w-5 h-5"></i>
+              </button>
+            </div>
+            <p class="text-onSurface-tertiary text-sm leading-relaxed mb-4" id="modalDescription">Описание</p>
+            <div class="flex flex-wrap gap-2 mb-4" id="modalTags"></div>
+            <div class="mb-4" id="modalSizesSection">
+              <p class="text-sm font-semibold mb-2">Размер</p>
+              <div class="flex flex-wrap gap-2" id="modalSizes"></div>
+            </div>
+            <div class="mb-6" id="modalQuantitySection">
+              <p class="text-sm font-semibold mb-2">Количество</p>
+              <div class="inline-flex items-center bg-surface-2 rounded-2xl overflow-hidden">
+                <button onclick="changeModalQty(-1)" class="m3-btn w-10 h-10 flex items-center justify-center text-onSurface-secondary hover:bg-surface-3">
+                  <i data-lucide="minus" class="w-4 h-4"></i>
+                </button>
+                <span class="w-10 text-center font-bold" id="modalQty">1</span>
+                <button onclick="changeModalQty(1)" class="m3-btn w-10 h-10 flex items-center justify-center text-onSurface-secondary hover:bg-surface-3">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+            <div class="mt-auto flex items-center gap-4">
+              <div>
+                <p class="text-sm text-onSurface-tertiary line-through" id="modalOldPrice"></p>
+                <p class="text-3xl font-black text-rgsu-500" id="modalPrice">0 ₽</p>
+              </div>
+              <button onclick="addToCartFromModal()" class="m3-btn flex-1 py-3.5 bg-rgsu-500 hover:bg-rgsu-600 text-white rounded-2xl font-bold text-sm shadow-lg shadow-rgsu-500/25 flex items-center justify-center gap-2">
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                В корзину
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Отзывы (на всю ширину) -->
+        <div class="mt-6 pt-4 border-t border-surface-2">
+          <h4 class="text-sm font-semibold mb-3">Отзывы</h4>
+          <!-- Форма отзыва -->
+          <div id="reviewForm" class="space-y-3 mb-4 hidden">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-onSurface-secondary">Оценка:</span>
+              <div id="starRating" class="flex gap-1">
+                <i data-lucide="star" class="w-5 h-5 star cursor-pointer text-gray-300 hover:text-yellow-400" onclick="setReviewStar(1)"></i>
+                <i data-lucide="star" class="w-5 h-5 star cursor-pointer text-gray-300 hover:text-yellow-400" onclick="setReviewStar(2)"></i>
+                <i data-lucide="star" class="w-5 h-5 star cursor-pointer text-gray-300 hover:text-yellow-400" onclick="setReviewStar(3)"></i>
+                <i data-lucide="star" class="w-5 h-5 star cursor-pointer text-gray-300 hover:text-yellow-400" onclick="setReviewStar(4)"></i>
+                <i data-lucide="star" class="w-5 h-5 star cursor-pointer text-gray-300 hover:text-yellow-400" onclick="setReviewStar(5)"></i>
+              </div>
+              <input type="hidden" id="reviewRating" value="0">
+            </div>
+            <textarea id="reviewText" rows="2" placeholder="Напишите ваш отзыв..." class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none resize-none"></textarea>
+            <button onclick="submitReview()" class="m3-btn px-6 py-2.5 bg-rgsu-500 text-white rounded-2xl text-sm font-bold">Отправить отзыв</button>
+          </div>
+          <!-- Список отзывов -->
+          <div id="modalReviews" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cart Sidebar Overlay -->
+<div id="cartOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden" onclick="closeCart()"></div>
+<div id="cartSidebar" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 transform translate-x-full cart-sidebar flex flex-col">
+  <div class="flex items-center justify-between p-5 border-b border-surface-3">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-rgsu-50 flex items-center justify-center">
+        <i data-lucide="shopping-bag" class="w-5 h-5 text-rgsu-500"></i>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold">Корзина</h3>
+        <p class="text-xs text-onSurface-tertiary" id="cartItemCount">0 товаров</p>
+      </div>
+    </div>
+    <button onclick="closeCart()" class="m3-btn w-10 h-10 rounded-2xl flex items-center justify-center hover:bg-surface-2 text-onSurface-secondary">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
+  </div>
+  <div class="flex-1 overflow-y-auto p-5" id="cartItems"></div>
+  <div id="cartEmpty" class="flex-1 flex flex-col items-center justify-center text-center p-5">
+    <div class="w-20 h-20 rounded-full bg-surface-2 flex items-center justify-center mb-4">
+      <i data-lucide="shopping-bag" class="w-10 h-10 text-onSurface-tertiary"></i>
+    </div>
+    <h4 class="text-lg font-bold text-onSurface-primary mb-2">Корзина пуста</h4>
+    <p class="text-sm text-onSurface-tertiary">Добавьте мерч, чтобы оформить заказ</p>
+  </div>
+  <div id="cartFooter" class="hidden border-t border-surface-3 p-5 bg-surface-1">
+    <div class="space-y-2 mb-4">
+      <div class="flex justify-between text-sm">
+        <span class="text-onSurface-secondary">Товары</span>
+        <span id="subtotalPrice">0 ₽</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-onSurface-secondary">Доставка</span>
+        <span class="text-green-600 font-medium">Бесплатно</span>
+      </div>
+      <div class="border-t border-surface-3 pt-2 flex justify-between font-bold text-lg">
+        <span>Итого</span>
+        <span class="text-rgsu-500" id="totalPrice">0 ₽</span>
+      </div>
+    </div>
+    <button onclick="checkout()" class="m3-btn w-full py-3.5 bg-rgsu-500 hover:bg-rgsu-600 text-white rounded-2xl font-bold text-sm shadow-lg shadow-rgsu-500/25 flex items-center justify-center gap-2">
+      <i data-lucide="credit-card" class="w-5 h-5"></i>
+      Оформить заказ
+    </button>
+  </div>
+</div>
+<!-- Address Modal -->
+<div id="addressModalOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden" onclick="closeAddressModal()"></div>
+<div id="addressModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m3-expressive-shadow-xl" onclick="event.stopPropagation()">
+    <div class="sticky top-0 bg-white/90 backdrop-blur-xl z-10 flex items-center justify-between p-4 sm:p-5 border-b border-surface-3 rounded-t-3xl">
+      <h3 class="text-xl font-bold" id="addressModalTitle">Новый адрес</h3>
+      <button onclick="closeAddressModal()" class="m3-btn w-10 h-10 rounded-2xl flex items-center justify-center hover:bg-surface-2 text-onSurface-secondary">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="p-4 sm:p-6 space-y-4">
+      <div>
+        <label class="text-sm font-medium text-onSurface-secondary block mb-1">Название адреса</label>
+        <input type="text" id="addressLabel" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none" placeholder="Дом, Работа, Родители">
+      </div>
+      <div>
+        <label class="text-sm font-medium text-onSurface-secondary block mb-1">Адрес</label>
+        <input type="text" id="addressInput" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none" placeholder="Начните вводить адрес или выберите на карте">
+      </div>
+      <!-- Карта -->
+      <div id="mapContainer" style="width:100%;height:300px;border-radius:1rem;overflow:hidden;">
+        <iframe 
+            src="https://yandex.ru/map-widget/v1/?um=constructor%3A579948515cf21d77b035bcac2f8d5379300dadac76657b5a996182981a6dc636&amp;source=constructor" 
+            width="100%" height="100%" frameborder="0">
+        </iframe>
+    </div>
+      <!-- Кнопки -->
+      <div class="flex gap-3 justify-end">
+        <button onclick="closeAddressModal()" class="m3-btn px-4 py-2 bg-surface-2 text-onSurface-secondary rounded-2xl font-medium text-sm">Отмена</button>
+        <button onclick="saveAddressFromModal()" class="m3-btn px-6 py-2 bg-rgsu-500 text-white rounded-2xl font-bold text-sm">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Card Modal -->
+<div id="cardModalOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden" onclick="closeCardModal()"></div>
+<div id="cardModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-md w-full p-6 m3-expressive-shadow-xl" onclick="event.stopPropagation()">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold">Новая карта</h3>
+      <button onclick="closeCardModal()" class="m3-btn w-10 h-10 rounded-2xl flex items-center justify-center hover:bg-surface-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+    
+    <!-- Карта с переворотом -->
+    <div class="card-container" id="cardContainer">
+      <div class="card-inner">
+        <!-- Лицевая сторона -->
+        <div class="card-face card-front">
+        <div class="card-logo" id="cardBrand">VISA</div>
+        <div class="card-number" id="cardNumberDisplay">•••• •••• •••• ••••</div>
+        <div class="card-details">
+            <span id="cardExpiryDisplay">ММ/ГГ</span>
+            <span id="cardHolderDisplay">ИМЯ ДЕРЖАТЕЛЯ</span>
+        </div>
+        </div>
+        <!-- Оборотная сторона -->
+        <div class="card-face card-back">
+          <div class="card-stripe"></div>
+          <div class="card-cvv-label">CVV</div>
+          <div class="card-cvv" id="cardCvvDisplay">•••</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Поля ввода -->
+    <div class="space-y-3">
+      <div>
+        <label class="text-sm font-medium text-onSurface-secondary block mb-1">Номер карты</label>
+        <input type="text" id="cardNumber" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none" placeholder="0000 0000 0000 0000" maxlength="19" oninput="updateCardDisplay()">
+      </div>
+      <div class="flex gap-3">
+        <div class="flex-1">
+          <label class="text-sm font-medium text-onSurface-secondary block mb-1">Срок (ММ/ГГ)</label>
+          <input type="text" id="cardExpiry" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none" placeholder="ММ/ГГ" maxlength="7" oninput="updateCardDisplay()">
+        </div>
+        <div class="flex-1">
+          <label class="text-sm font-medium text-onSurface-secondary block mb-1">CVV</label>
+          <input type="text" id="cardCvv" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none" placeholder="123" maxlength="3" onfocus="flipCard(true)" onblur="flipCard(false)" oninput="updateCardDisplay()">
+        </div>
+      </div>
+      <div>
+        <label class="text-sm font-medium text-onSurface-secondary block mb-1">Имя держателя</label>
+        <input type="text" id="cardHolder" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none" placeholder="IVAN IVANOV" oninput="updateCardDisplay()">
+      </div>
+      <div class="flex gap-3 justify-end mt-4">
+        <button onclick="closeCardModal()" class="m3-btn px-4 py-2 bg-surface-2 text-onSurface-secondary rounded-2xl font-medium text-sm">Отмена</button>
+        <button onclick="saveCard()" class="m3-btn px-6 py-2 bg-rgsu-500 text-white rounded-2xl font-bold text-sm">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- Lightbox -->
+  <div id="lightbox" class="fixed inset-0 z-[200] bg-black/80 hidden items-center justify-center p-4" onclick="closeLightbox()">
+      <img id="lightboxImg" src="" class="max-w-full max-h-full object-contain rounded-2xl">
+  </div>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Панель управления — РГСУ Мерч</title>
+
+  <link rel="icon" type="image/png" href="/static/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/svg+xml" href="/static/favicons/favicon.svg">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            rgsu: {
+              50: '#eef1fa', 100: '#dde4f5', 200: '#bbc9eb', 300: '#99aee1',
+              400: '#7793d7', 500: '#102FA1', 600: '#0d267d', 700: '#0a1c59',
+              800: '#061235', 900: '#030911',
+            },
+            'rgsu-dark': '#082567', 'rgsu-light': '#D5E4F4', 'rgsu-red': '#A91917',
+            surface: {
+              0: '#ffffff', 1: '#f8f9fb', 2: '#f0f2f5', 3: '#e8eaef', 4: '#dde1e6',
+            },
+            onSurface: {
+              primary: '#1a1c1e', secondary: '#44474a', tertiary: '#6f7378',
+            }
+          },
+          borderRadius: { 'm3xl': '28px', 'm4xl': '36px' },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+
+  <script>
+    // Немедленное применение темы
+    (function() {
+      var theme = localStorage.getItem('rgsu_theme');
+      if (theme === 'dark') document.documentElement.classList.add('dark');
+    })();
+  </script>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="bg-surface-1 text-onSurface-primary min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-surface-3 dark:bg-gray-900/90 dark:border-gray-700">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <a href="/" class="w-10 h-10 rounded-2xl hero-gradient flex items-center justify-center shadow-lg">
+            <svg viewBox="0 0 82.64 88.24" class="w-full h-full p-1.5" preserveAspectRatio="xMidYMid meet">
+              <path fill="white" d="M4.26,84.06c0-3.28,2.61-6.11,4.51-7.74,1.72,1.28,3.85,2.03,6.15,2.03,2.46,0,4.71-.86,6.49-2.3,1.33,1.11,3.14,2.9,4.13,5.07v7.11h4.26v-12.61c0-6.02,2.66-9.28,4.31-10.72,2.13,1.7,4.82,2.71,7.75,2.71s5.4-.93,7.48-2.5c1.66,1.54,4.07,4.77,4.07,10.51v2.89c-.02.33-.03.67-.03,1.02v8.7h4.29v-9.55c.31-4.61,3.05-7.28,4.78-8.52,1.66,1.15,3.68,1.82,5.85,1.82,2.04,0,3.94-.6,5.55-1.62,1.84,1.4,4.55,4.28,4.55,9.17v8.7h4.26v-8.7c0-6.25-3.22-10.11-5.75-12.17,1.09-1.64,1.72-3.6,1.72-5.71,0-3.82-2.08-7.15-5.17-8.94v-5.73c0-11.76-7.65-17.86-12.5-20.55,2.94-2.8,4.78-6.74,4.78-11.11,0-8.45-6.88-15.33-15.33-15.33-5.56,0-10.43,2.97-13.12,7.41-2.12-1.11-4.52-1.74-7.07-1.74-8.45,0-15.33,6.88-15.33,15.33,0,3.64,1.28,6.98,3.4,9.62-3.01,2.17-7.16,7.03-7.27,17.35-.05,4.42-.07,7.93-.08,10.51-3.73,1.56-6.36,5.25-6.36,9.54,0,1.86.5,3.61,1.36,5.12-2.5,2.16-5.94,6.02-5.94,10.92v4.19h4.26v-4.19Zm37.59-20.69c-4.53,0-8.22-3.69-8.22-8.22s3.69-8.22,8.22-8.22,8.22,3.69,8.22,8.22-3.69,8.22-8.22,8.22Zm26.44,4.37c-3.35,0-6.08-2.73-6.08-6.08s2.73-6.08,6.08-6.08,6.08,2.73,6.08,6.08-2.73,6.08-6.08,6.08Zm.91-20.75v4.38c-.3-.03-.6-.04-.91-.04-5.7,0-10.33,4.64-10.33,10.33,0,1.98.56,3.84,1.54,5.41-.83.64-1.77,1.49-2.65,2.56-1.08-3.69-3.02-6.13-4.6-7.6,1.31-1.97,2.08-4.34,2.08-6.88,0-3.94-1.84-7.45-4.7-9.74-.65-8.8-4.56-13.02-7.36-14.94.39-.49.75-1,1.07-1.54,2.12,1.11,4.52,1.73,7.07,1.73,2.35,0,4.57-.53,6.56-1.48,3.25,1.36,12.23,6.16,12.23,17.8ZM50.41,4.26c6.11,0,11.08,4.97,11.08,11.08s-4.97,11.08-11.08,11.08c-1.96,0-3.79-.51-5.39-1.41.34-1.27.53-2.61.53-3.99,0-4.37-1.84-8.32-4.79-11.11,1.9-3.36,5.51-5.64,9.64-5.64Zm-20.19,5.68c6.11,0,11.08,4.97,11.08,11.08s-4.97,11.08-11.08,11.08-11.08-4.97-11.08-11.08,4.97-11.08,11.08-11.08Zm-8.74,23.67c2.48,1.73,5.49,2.74,8.74,2.74s6.37-1.06,8.88-2.84c1.58.85,4.81,3.31,5.95,9.6-1.02-.27-2.09-.42-3.19-.42-6.88,0-12.47,5.59-12.47,12.47,0,2.42.7,4.68,1.89,6.59-2.18,1.92-5.26,5.77-5.68,12.37-.52-.52-1.03-.97-1.5-1.36.74-1.42,1.15-3.03,1.15-4.74,0-5.6-4.48-10.17-10.05-10.33,0-2.2.03-5.31.07-9.68.1-9.71,4.23-13.27,6.21-14.42Zm-6.57,28.34c3.35,0,6.08,2.73,6.08,6.08s-2.73,6.08-6.08,6.08-6.08-2.73-6.08-6.08,2.73-6.08,6.08-6.08Z"/>
+            </svg>
+          </a>
+          <div>
+            <h1 class="text-lg font-bold">Панель управления</h1>
+            <p class="text-xs text-onSurface-tertiary">РГСУ Мерч</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleTheme()" class="m3-btn w-10 h-10 rounded-2xl flex items-center justify-center hover:bg-surface-2">
+            <i data-lucide="moon" class="w-5 h-5 hidden dark:block"></i>
+            <i data-lucide="sun" class="w-5 h-5 block dark:hidden"></i>
+          </button>
+          <a href="/" class="m3-btn px-4 py-2 bg-rgsu-500 text-white rounded-2xl text-sm font-medium">В магазин</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ОСНОВНОЙ КОНТЕНТ -->
+  <main class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    <h2 class="text-2xl font-extrabold mb-6">Управление</h2>
+
+    <!-- Табы -->
+    <div class="flex gap-2 mb-6 border-b border-surface-2 pb-2">
+      <button class="admin-tab active px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap" data-tab="orders">Заказы</button>
+      <button class="admin-tab px-4 py-2 rounded-xl text-sm font-medium text-onSurface-secondary hover:bg-surface-2 whitespace-nowrap" data-tab="products">Товары</button>
+      <button class="admin-tab px-4 py-2 rounded-xl text-sm font-medium text-onSurface-secondary hover:bg-surface-2 whitespace-nowrap" data-tab="categories">Категории</button>
+      <button class="admin-tab px-4 py-2 rounded-xl text-sm font-medium text-onSurface-secondary hover:bg-surface-2 whitespace-nowrap" data-tab="news">Новости</button>
+      <button class="admin-tab px-4 py-2 rounded-xl text-sm font-medium text-onSurface-secondary hover:bg-surface-2 whitespace-nowrap" data-tab="reviews">Отзывы</button>
+      <button class="admin-tab px-4 py-2 rounded-xl text-sm font-medium text-onSurface-secondary hover:bg-surface-2 whitespace-nowrap" data-tab="users">Пользователи</button>
+    </div>
+
+    <!-- Заказы -->
+    <div id="tabOrders" class="admin-tab-content">
+      <div id="adminOrdersList" class="space-y-4"></div>
+      <div id="adminOrdersEmpty" class="hidden text-center py-8">
+        <i data-lucide="package" class="w-12 h-12 text-onSurface-tertiary mx-auto mb-3"></i>
+        <p class="text-onSurface-tertiary">Нет активных заказов</p>
+      </div>
+    </div>
+
+    <!-- Товары -->
+    <div id="tabProducts" class="admin-tab-content hidden">
+      <div class="sticky top-16 z-30 bg-white/90 backdrop-blur-xl dark:bg-gray-900/90 py-2 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div class="flex items-center justify-between">
+          <p class="text-sm text-onSurface-secondary" id="adminProductCount">0 товаров</p>
+          <button onclick="openProductForm()" class="m3-btn inline-flex items-center px-4 py-2 bg-rgsu-500 text-white rounded-xl text-sm font-medium whitespace-nowrap">
+            <i data-lucide="plus" class="w-4 h-4 mr-1"></i> Добавить товар
+          </button>
+        </div>
+      </div>
+      <div id="adminProductsList" class="space-y-4 mt-4"></div>
+    </div>
+
+    <!-- Категории -->
+    <div id="tabCategories" class="admin-tab-content hidden">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold">Категории</h3>
+        <button onclick="openCategoryForm()" class="m3-btn inline-flex items-center px-4 py-2 bg-rgsu-500 text-white rounded-xl text-sm font-medium whitespace-nowrap">
+          <i data-lucide="plus" class="w-4 h-4 mr-1"></i> Добавить категорию
+        </button>
+      </div>
+      <div id="categoriesList" class="space-y-2"></div>
+    </div>
+
+    <!-- Новости -->
+    <div id="tabNews" class="admin-tab-content hidden">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold">Новости</h3>
+        <button onclick="openNewsForm()" class="m3-btn inline-flex items-center px-4 py-2 bg-rgsu-500 text-white rounded-xl text-sm font-medium whitespace-nowrap">
+          <i data-lucide="plus" class="w-4 h-4 mr-1"></i> Добавить новость
+        </button>
+      </div>
+      <div id="newsList" class="space-y-4"></div>
+    </div>
+
+    <!-- Отзывы -->
+    <div id="tabReviews" class="admin-tab-content hidden">
+      <div class="space-y-4" id="reviewsList"></div>
+    </div>
+
+    <!-- Пользователи -->
+    <div id="tabUsers" class="admin-tab-content hidden">
+      <div id="usersList" class="space-y-4"></div>
+    </div>
+  </main>
+
+  <footer class="bg-rgsu-dark text-white mt-16">
+    <div class="max-w-screen-xl mx-auto px-4 py-6 text-center text-sm text-white/40">© 2026 РГСУ Мерч</div>
+  </footer>
+
+  <!-- TOAST -->
+  <div id="toastContainer" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-2"></div>
+
+  <!-- Модальное окно товара (с несколькими изображениями) -->
+  <div id="productFormModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m3-expressive-shadow-xl" onclick="event.stopPropagation()">
+      <div class="sticky top-0 bg-white/90 backdrop-blur-xl z-10 flex items-center justify-between p-4 border-b border-surface-3 rounded-t-3xl">
+        <h3 class="text-xl font-bold" id="productFormTitle">Новый товар</h3>
+        <button onclick="closeProductForm()" class="m3-btn w-10 h-10 rounded-2xl flex items-center justify-center"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="productForm" class="p-4 sm:p-6 space-y-4" onsubmit="event.preventDefault(); saveProductChanges();">
+        <input type="hidden" name="productId" value="-1">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-medium">Название</label>
+            <input type="text" name="title" required class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Категория</label>
+            <select name="category" id="productCategorySelect" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none"></select>
+          </div>
+          <div>
+            <label class="text-sm font-medium">Цена (₽)</label>
+            <input type="number" name="price" required class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Старая цена</label>
+            <input type="number" name="oldPrice" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+          </div>
+          <div class="md:col-span-2">
+            <label class="text-sm font-medium">Изображения (URL, через запятую)</label>
+            <textarea name="images" rows="2" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none" placeholder="http://... , http://..."></textarea>
+            <p class="text-xs text-onSurface-tertiary mt-1">Введите URL‑ы через запятую. Первый станет основным.</p>
+          </div>
+          <div class="md:col-span-2">
+            <label class="text-sm font-medium">Описание</label>
+            <textarea name="description" rows="2" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none resize-none"></textarea>
+          </div>
+          <div>
+            <label class="text-sm font-medium">Размеры (через запятую)</label>
+            <input type="text" name="sizes" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none" placeholder="S, M, L">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Теги (через запятую)</label>
+            <input type="text" name="tags" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none" placeholder="Хит, Новинка">
+          </div>
+        </div>
+        <div class="flex gap-3 justify-end">
+          <button type="button" onclick="closeProductForm()" class="m3-btn px-4 py-2 bg-surface-2 text-onSurface-secondary rounded-2xl font-medium text-sm">Отмена</button>
+          <button type="submit" class="m3-btn px-6 py-2 bg-rgsu-500 text-white rounded-2xl font-bold text-sm">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно новости -->
+  <div id="newsFormModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m3-expressive-shadow-xl" onclick="event.stopPropagation()">
+      <div class="sticky top-0 bg-white/90 backdrop-blur-xl z-10 flex items-center justify-between p-4 border-b border-surface-3 rounded-t-3xl">
+        <h3 class="text-xl font-bold" id="newsFormTitle">Новая новость</h3>
+        <button onclick="closeNewsForm()" class="m3-btn w-10 h-10 rounded-2xl flex items-center justify-center"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="newsForm" class="p-4 sm:p-6 space-y-4" onsubmit="event.preventDefault(); saveNewsChanges();">
+        <input type="hidden" name="newsId" value="-1">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="md:col-span-2">
+            <label class="text-sm font-medium">Заголовок</label>
+            <input type="text" name="title" required class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Подзаголовок (дата/категория)</label>
+            <input type="text" name="subtitle" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Дата (отображаемая)</label>
+            <input type="text" name="date" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none" placeholder="15 апреля 2026">
+          </div>
+          <div class="md:col-span-2">
+            <label class="text-sm font-medium">Текст новости</label>
+            <textarea name="description" rows="3" required class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none"></textarea>
+          </div>
+          <div>
+            <label class="text-sm font-medium">Кнопка 1 – URL</label>
+            <input type="text" name="link1_url" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Кнопка 1 – Текст</label>
+            <input type="text" name="link1_text" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Кнопка 2 – URL</label>
+            <input type="text" name="link2_url" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Кнопка 2 – Текст</label>
+            <input type="text" name="link2_text" class="w-full px-4 py-2.5 bg-surface-2 rounded-2xl text-sm border border-surface-3 focus:border-rgsu-500 outline-none">
+          </div>
+        </div>
+        <div class="flex gap-3 justify-end">
+          <button type="button" onclick="closeNewsForm()" class="m3-btn px-4 py-2 bg-surface-2 text-onSurface-secondary rounded-2xl font-medium text-sm">Отмена</button>
+          <button type="submit" class="m3-btn px-6 py-2 bg-rgsu-500 text-white rounded-2xl font-bold text-sm">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/static/javascript/script.js"></script>
+  <script src="/static/javascript/admin.js"></script>
+</body>
+</html>

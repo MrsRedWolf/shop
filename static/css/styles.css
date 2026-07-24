@@ -1,0 +1,608 @@
+* { font-family: 'Inter', system-ui, sans-serif; }
+
+/* Тени Material You */
+.m3-expressive-shadow {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+}
+.m3-expressive-shadow-lg {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.08);
+}
+.m3-expressive-shadow-xl {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1), 0 16px 48px rgba(0,0,0,0.12);
+}
+
+/* Карточка товара */
+.product-card {
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+.product-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1), 0 16px 48px rgba(0,0,0,0.12);
+}
+
+/* Кнопка Material 3 */
+.m3-btn {
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  position: relative;
+  overflow: hidden;
+}
+.m3-btn:active {
+  transform: scale(0.96);
+}
+.m3-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.m3-btn:hover::after {
+  opacity: 0.08;
+}
+
+/* Чипсы категорий */
+.chip {
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+.chip:hover {
+  background: rgba(16, 47, 161, 0.08); /* подкраска основным синим */
+}
+.chip.active {
+  background: #102FA1 !important;
+  color: white !important;
+  border-color: #102FA1 !important;
+}
+
+/* Анимации появления */
+.fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.2, 0, 0, 1);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-up {
+  animation: slideUp 0.45s cubic-bezier(0.2, 0, 0, 1);
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-overlay {
+  animation: overlayIn 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Бейджик корзины */
+.badge-bounce {
+  animation: badgeBounce 0.4s cubic-bezier(0.2, 0, 0, 1);
+}
+@keyframes badgeBounce {
+  0% { transform: scale(0.5); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* Сайдбар корзины */
+.cart-sidebar {
+  transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Выпадашка сортировки */
+.sort-dropdown {
+  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Скроллбар */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* Фирменный градиент на основе двух синих */
+.hero-gradient {
+  background: linear-gradient(135deg, #082567 0%, #102FA1 50%, #0d267d 100%);
+}
+
+/* Toast-уведомления */
+.toast {
+  animation: toastIn 0.35s cubic-bezier(0.2, 0, 0, 1), toastOut 0.35s 2.5s cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(20px) scale(0.95); }
+}
+
+/* Hero-слайдер */
+/* Hero-слайдер */
+#heroSlider {
+  transition: height 0.3s ease; /* плавное изменение высоты */
+}
+
+/* Все слайды по умолчанию скрыты и без анимации */
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: translateX(100%);
+  pointer-events: none;
+  /* убираем transition – анимация будет только у enter/leave */
+  transition: none;
+}
+
+/* Активный слайд (видимый) */
+.hero-slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+/* Анимация появления (новый слайд) */
+.hero-slide.enter {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Анимация ухода (старый слайд) */
+.hero-slide.leave {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Точки новостей */
+.news-dot {
+  transition: all 0.3s;
+}
+.news-dot.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+/* Стили для заказов в кабинете */
+.order-card {
+  transition: all 0.2s ease;
+}
+.order-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.order-status {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.order-status.processing {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+.order-status.shipped {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+.order-status.delivered {
+  background-color: #d1fae5;
+  color: #059669;
+}
+.order-status.cancelled {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+.expandable-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.expandable-details.open {
+  max-height: 500px; /* достаточно для содержимого */
+}
+
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 */
+}
+.map-container iframe,
+.map-container > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+}
+
+/* === Стили для банковской карты (переворот) === */
+.card-container {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 320px;
+  height: 200px;
+  margin: 0 auto 20px;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s ease;
+  transform-style: preserve-3d;
+}
+
+.card-container.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  padding: 20px;
+  box-sizing: border-box;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #102FA1 0%, #082567 100%);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #082567 0%, #102FA1 100%);
+}
+
+.card-front .card-logo {
+  align-self: flex-end;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.card-front .card-number {
+  font-size: 18px;
+  letter-spacing: 2px;
+  word-spacing: 6px;
+  text-align: center;
+}
+
+.card-front .card-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.card-back .card-stripe {
+  width: 100%;
+  height: 40px;
+  background: #333;
+  margin: 10px 0;
+}
+
+.card-back .card-cvv-label {
+  font-size: 10px;
+  text-align: right;
+}
+
+.card-back .card-cvv {
+  background: white;
+  color: #000;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-align: right;
+  align-self: flex-end;
+}
+
+/* Тёмная тема */
+.dark body {
+  background-color: #111827;
+  color: #f9fafb;
+}
+.dark .bg-surface-1 { background-color: #1f2937; }
+.dark .bg-surface-2 { background-color: #374151; }
+.dark .bg-white { background-color: #1f2937; }
+.dark .text-onSurface-primary { color: #f9fafb; }
+.dark .text-onSurface-secondary { color: #d1d5db; }
+.dark .text-onSurface-tertiary { color: #9ca3af; }
+.dark .border-surface-3 { border-color: #4b5563; }
+.dark .border-surface-2 { border-color: #374151; }
+.dark .border-surface-4 { border-color: #4b5563; }
+.dark .chip {
+  background-color: #374151;
+  color: #d1d5db;
+  border-color: #4b5563;
+}
+.dark .chip.active {
+  background-color: #102FA1 !important;
+  color: white !important;
+}
+.dark .chip:hover {
+  background-color: rgba(16, 47, 161, 0.2);
+}
+.dark .product-card {
+  background-color: #1f2937;
+}
+.dark .sort-dropdown {
+  background-color: #1f2937;
+  border-color: #4b5563;
+}
+.dark .sort-dropdown button {
+  color: #d1d5db;
+}
+.dark .sort-dropdown button:hover {
+  background-color: #374151;
+}
+.dark .m3-expressive-shadow {
+  box-shadow: 0 1px 3px rgba(255,255,255,0.05), 0 4px 12px rgba(255,255,255,0.03);
+}
+.dark .m3-expressive-shadow-lg {
+  box-shadow: 0 2px 6px rgba(255,255,255,0.05), 0 8px 24px rgba(255,255,255,0.05);
+}
+.dark .m3-expressive-shadow-xl {
+  box-shadow: 0 4px 12px rgba(255,255,255,0.08), 0 16px 48px rgba(255,255,255,0.08);
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #374151;
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+/* Исправляем сливающиеся элементы */
+.dark .hero-gradient {
+  background: linear-gradient(135deg, #030911 0%, #0a1c59 50%, #061235 100%);
+}
+.dark .news-dot {
+  background-color: rgba(255,255,255,0.4);
+}
+.dark .news-dot.active {
+  background-color: white;
+}
+.dark .bg-rgsu-50 {
+  background-color: #1e3a8a;
+}
+.dark .bg-rgsu-50\/10 {
+  background-color: rgba(30, 58, 138, 0.1);
+}
+.dark .text-rgsu-500 {
+  color: #93c5fd;
+}
+/* Чтобы чипсы были видны на тёмном фоне */
+.dark .chip {
+  background-color: #374151;
+  color: #d1d5db;
+  border-color: #4b5563;
+}
+/* Исправляем кнопку "В корзину" – она и так синяя, но можно усилить */
+.dark .bg-rgsu-500 {
+  background-color: #2563eb;
+}
+
+/* Исправляем "липкий" заголовок в модальных окнах */
+.dark .modal-overlay .sticky,
+.dark #productModal .sticky,
+.dark #infoModal .sticky,
+.dark #authModal .sticky,
+.dark #cardModal .sticky,
+.dark #addressModal .sticky,
+.dark #cartSidebar .sticky {
+  background-color: rgba(31, 41, 55, 0.9) !important; /* тёмный фон вместо белого */
+  backdrop-filter: blur(20px);
+}
+
+/* Плавное появление панели фильтров */
+#filtersPanel {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  border-bottom-width: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease, border-bottom-width 0s 0.3s;
+}
+#filtersPanel.open {
+  max-height: 300px;   /* достаточно для содержимого */
+  opacity: 1;
+  border-bottom-width: 1px;
+  transition: max-height 0.4s ease, opacity 0.3s ease, border-bottom-width 0s;
+}
+
+.dark .bg-surface-1,
+.bg-surface-1,
+.dark .bg-surface-2,
+.bg-surface-2,
+.dark .bg-white,
+.bg-white,
+.dark .bg-rgsu-50,
+.bg-rgsu-50 {
+  transition: background-color 0.4s ease;
+}
+
+.dark .text-onSurface-primary,
+.text-onSurface-primary,
+.dark .text-onSurface-secondary,
+.text-onSurface-secondary,
+.dark .text-onSurface-tertiary,
+.text-onSurface-tertiary,
+.dark .text-rgsu-500,
+.text-rgsu-500 {
+  transition: color 0.4s ease;
+}
+
+.dark .border-surface-3,
+.border-surface-3,
+.dark .border-surface-2,
+.border-surface-2,
+.dark .border-surface-4,
+.border-surface-4 {
+  transition: border-color 0.4s ease;
+}
+
+.dark .chip,
+.chip {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.dark .product-card,
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease;
+}
+
+.dark .m3-expressive-shadow,
+.m3-expressive-shadow,
+.dark .m3-expressive-shadow-lg,
+.m3-expressive-shadow-lg,
+.dark .m3-expressive-shadow-xl,
+.m3-expressive-shadow-xl {
+  transition: box-shadow 0.4s ease;
+}
+
+.dark input,
+input,
+.dark select,
+select,
+.dark textarea,
+textarea {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+/* Для sticky-шапок модальных окон */
+.dark .modal-overlay .sticky,
+.modal-overlay .sticky {
+  transition: background-color 0.4s ease;
+}
+
+body {
+  transition: none !important;
+}
+
+.admin-tab.active {
+  background-color: #eef1fa;
+  color: #102FA1;
+}
+
+/* Адаптация hover-эффекта для кнопок хедера */
+.dark .hover\:bg-surface-2:hover {
+  background-color: #4b5563 !important; /* чуть светлее тёмного фона */
+}
+
+/* Исправляем заголовок модального окна формы товара */
+.dark #productFormModal .sticky,
+.dark #productFormModal .bg-white\/90 {
+  background-color: rgba(31, 41, 55, 0.9) !important;
+  backdrop-filter: blur(20px);
+}
+.dark #productFormModal .border-surface-3 {
+  border-color: #4b5563;
+}
+.dark #productFormModal .text-onSurface-primary,
+.dark #productFormModal #productFormTitle {
+  color: #f9fafb;
+}
+
+/* Исправляем заголовок модального окна новости */
+.dark #newsFormModal .sticky,
+.dark #newsFormModal .bg-white\/90 {
+  background-color: rgba(31, 41, 55, 0.9) !important;
+  backdrop-filter: blur(20px);
+}
+.dark #newsFormModal .border-surface-3 {
+  border-color: #4b5563;
+}
+.dark #newsFormModal .text-onSurface-primary,
+.dark #newsFormModal #newsFormTitle {
+  color: #f9fafb;
+}
+
+.admin-tab-content {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Адаптация табов админки под тёмную тему */
+.dark .admin-tab {
+  background-color: transparent;
+  color: #d1d5db;
+}
+.dark .admin-tab:hover {
+  background-color: #374151;
+}
+.dark .admin-tab.active {
+  background-color: #1e3a8a;   /* синий фон, как в кабинете */
+  color: #93c5fd;              /* голубой текст */
+}
+
+/* Адаптация табов кабинета под тёмную тему */
+.dark .cabinet-tab {
+  background-color: transparent;
+  color: #d1d5db;
+}
+.dark .cabinet-tab:hover {
+  background-color: #374151;
+}
+.dark .cabinet-tab.active {
+  background-color: #1e3a8a;
+  color: #93c5fd;
+}
+
+/* ============================================
+   АКТИВНЫЕ ТАБЫ (ОБЩИЕ ДЛЯ КАБИНЕТА И АДМИНКИ)
+   ============================================ */
+.cabinet-tab.active,
+.admin-tab.active {
+  background-color: #eef1fa;   /* светлый фон для светлой темы */
+  color: #102FA1;              /* тёмно-синий текст */
+}
+
+/* Анимация содержимого вкладок */
+.cabinet-tab-content {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Тёмная тема: переопределяем */
+.dark .cabinet-tab,
+.dark .admin-tab {
+  background-color: transparent;
+  color: #d1d5db;
+}
+.dark .cabinet-tab:hover,
+.dark .admin-tab:hover {
+  background-color: #374151;
+}
+.dark .cabinet-tab.active,
+.dark .admin-tab.active {
+  background-color: #1e3a8a;   /* синий фон в тёмной теме */
+  color: #93c5fd;              /* голубой текст */
+}
+
+.auth-tab.active {
+  background-color: #eef1fa;
+  color: #102FA1;
+}
+
+
+/* Адаптив: отключаем поднятие карточки на мобильных */
+@media (max-width: 640px) {
+  .product-card:hover {
+    transform: none;
+  }
+}
